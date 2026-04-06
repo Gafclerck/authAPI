@@ -31,8 +31,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 VERIFICATION_CODE_EXPIRE_MINUTES=10
 ```
 
-**⚠️ Important:** Generate a strong SECRET_KEY:
-
 ```bash
 python -c "import secrets; print(secrets.token_hex(32))"
 ```
@@ -235,44 +233,6 @@ Utilities:
   - watchfiles (1.1.1)
 ```
 
-## 🌐 Deployment (Vercel)
-
-### Prerequisites:
-
-- GitHub repository
-- Vercel account
-- PostgreSQL or MongoDB (SQLite won't work on Vercel)
-
-### Steps:
-
-1. **Create `vercel.json`**:
-
-```json
-{
-  "builds": [
-    {
-      "src": "app/main.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "app/main.py"
-    }
-  ]
-}
-```
-
-2. **Set Environment Variables on Vercel**:
-   - `SECRET_KEY` (generate strong key)
-   - `ALGORITHM=HS256`
-   - `ACCESS_TOKEN_EXPIRE_MINUTES=30`
-   - `VERIFICATION_CODE_EXPIRE_MINUTES=10`
-   - `DATABASE_URL` (if using PostgreSQL)
-
-3. **Push to GitHub** and connect to Vercel
-
 ## 🐳 Docker (Local Testing)
 
 ```dockerfile
@@ -305,111 +265,3 @@ docker run -p 8000:8000 -e SECRET_KEY=your-key auth-api
 
 **Last Updated**: April 2026  
 **Version**: 1.0.0
-{
-"name": "John Doe",
-"email": "john@example.com",
-"is_verified": false
-}
-
-````
-
-### Send Verification Code
-
-```bash
-curl -X POST "http://localhost:8000/send-code" \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
-````
-
-### Verify Email
-
-```bash
-curl -X POST "http://localhost:8000/verify" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "john@example.com",
-    "code": "123456"
-  }'
-```
-
-### Delete Account
-
-```bash
-curl -X DELETE "http://localhost:8000/delete-account" \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
-```
-
-## 📁 Project Structure
-
-```
-app/
-├── main.py              # FastAPI app
-├── config.py            # Settings
-├── database.py          # Database setup
-├── schema.py            # Request/Response models
-├── security.py          # Password & JWT handling
-├── dependecies.py       # Authentication dependency
-├── models/
-│   ├── user.py          # User model
-│   └── verification.py  # Verification code model
-└── routes/
-    ├── auth.py          # Register & Login
-    ├── user.py          # Profile & Delete
-    └── verification.py  # Send code & Verify
-```
-
-## 🔒 Security Features
-
-- Password hashing with `pwdlib`
-- JWT authentication (HS256)
-- Email validation (Pydantic EmailStr)
-- Timing attack protection in login
-- 10-minute code expiration
-- SQLite database
-
-## 🌐 Deployment
-
-### Vercel
-
-1. Push to GitHub
-2. Connect repo to Vercel
-3. Create `vercel.json`:
-
-```json
-{
-  "builds": [{ "src": "app/main.py", "use": "@vercel/python" }],
-  "routes": [{ "src": "/(.*)", "dest": "app/main.py" }]
-}
-```
-
-### Render or Railway
-
-1. Connect GitHub repo
-2. Set Start Command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-3. Deploy
-
-### Docker
-
-```dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY app/ ./app/
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-## 📦 Dependencies
-
-- fastapi
-- uvicorn
-- sqlalchemy
-- pydantic
-- python-jose
-- pwdlib
-- email-validator
-- python-dotenv
-
----
-
-**Status:** Working
-**Last Updated:** April 2026

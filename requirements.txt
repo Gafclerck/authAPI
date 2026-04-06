@@ -1,5 +1,6 @@
 # Core dependencies
 fastapi==0.135.3
+fastapi[standard]==0.135.3
 uvicorn==0.42.0
 python-dotenv==1.2.2
 
@@ -13,6 +14,7 @@ email-validator==2.3.0
 # Security & Authentication
 PyJWT==2.12.1
 pwdlib==0.3.0
+pwdlib[argon2]==0.3.0
 
 # HTTP parsing
 httptools==0.7.1
